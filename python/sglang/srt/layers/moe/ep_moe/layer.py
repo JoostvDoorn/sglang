@@ -57,7 +57,14 @@ from sglang.srt.utils import DeepEPMode, dispose_tensor, is_hip, set_weight_attr
 _is_hip = is_hip()
 
 if _is_hip:
-    from vllm._custom_ops import scaled_fp8_quant
+    try:
+        from vllm._custom_ops import scaled_fp8_quant
+    except ImportError:
+        import warnings
+        warnings.warn(
+            "scaled_fp8_quant is not available. "
+            "Make sure to install vLLM with custom ops support."
+        )
 
 logger = logging.getLogger(__name__)
 

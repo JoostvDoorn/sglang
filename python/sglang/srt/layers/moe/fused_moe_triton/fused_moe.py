@@ -38,8 +38,15 @@ _is_cuda = is_cuda()
 if _is_cuda:
     from sgl_kernel import gelu_and_mul, silu_and_mul
 else:
-    from vllm import _custom_ops as vllm_ops
-    from vllm._custom_ops import scaled_fp8_quant
+    try:
+        from vllm import _custom_ops as vllm_ops
+        from vllm._custom_ops import scaled_fp8_quant
+    except ImportError:
+        import warnings
+        warnings.warn(
+            "scaled_fp8_quant is not available. "
+            "Make sure to install vLLM with custom ops support."
+        )
 
 if _is_cuda or _is_hip:
     from sgl_kernel import moe_align_block_size as sgl_moe_align_block_size

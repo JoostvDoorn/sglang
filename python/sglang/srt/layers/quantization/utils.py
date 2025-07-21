@@ -2,6 +2,7 @@
 
 from types import MappingProxyType
 from typing import List, Mapping, Tuple, Union
+import warnings
 
 import torch
 
@@ -11,7 +12,13 @@ from sglang.srt.utils import is_cuda
 _is_cuda = is_cuda()
 
 if not _is_cuda:
-    from vllm._custom_ops import scaled_fp8_quant
+    try:
+        from vllm._custom_ops import scaled_fp8_quant
+    except ImportError:
+        warnings.warn(
+            "scaled_fp8_quant is not available. "
+            "Make sure to install vLLM with custom ops support."
+        )
 
 
 def is_layer_skipped(

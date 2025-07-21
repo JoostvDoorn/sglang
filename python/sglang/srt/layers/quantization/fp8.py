@@ -1,6 +1,7 @@
 # Adapted from https://github.com/vllm-project/vllm/blob/v0.6.4.post1/vllm/model_executor/layers/quantization/fp8.py
 
 import logging
+import warnings
 from typing import Any, Callable, Dict, List, Optional
 
 import torch
@@ -86,7 +87,13 @@ if _is_hip:
     from aiter.ops.shuffle import shuffle_weight
 
 if not _is_cuda:
-    from vllm._custom_ops import scaled_fp8_quant
+    try:
+        from vllm._custom_ops import scaled_fp8_quant
+    except ImportError:
+        warnings.warn(
+            "scaled_fp8_quant is not available. "
+            "Make sure to install vLLM with custom ops support."
+        )
 
 
 ACTIVATION_SCHEMES = ["static", "dynamic"]
