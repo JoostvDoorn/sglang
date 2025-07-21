@@ -169,4 +169,10 @@ if not _is_cuda:
     logger.info(
         "sgl-kernel is not available on Non-NV platforms. Fallback to other kernel libraries."
     )
-    from vllm.model_executor.layers.activation import GeluAndMul, SiluAndMul
+    try:
+        from vllm.model_executor.layers.activation import GeluAndMul, SiluAndMul
+    except ImportError:
+        import warnings
+        warnings.warn(
+            "Cannot import vLLM. Make sure to install vLLM if it's needed."
+        )
